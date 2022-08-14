@@ -7,14 +7,14 @@ import time
 def run(games):
     # curenv = os.environ.copy()
     cmds = []
-    filePath = "./CEBP/"
+
     geneStr = "_".join(games["geneList"])
     for _cancer in games["cancerList"]:
         if geneStr == "":
             for _rate in games["treatRate"]:
                 log = games["savePath"] + "/" + _cancer + str(_rate) +"_"+ str(games["confounderRate"])+games["pathway"] + ".log"
                 cmd = ["nohup", "python",
-                       filePath + games["fileName"],
+                       games["fileName"],
                        "--cancer=" + _cancer,
                        "--modelName=" + games["modelName"],
                        "--geneMutationRate=" + str(_rate),
@@ -35,7 +35,7 @@ def run(games):
             for _hiCo in games["hiddenConfounder"]:
                 log = games["savePath"] + "/" + _cancer + geneStr + str(games["confounderRate"]) + str(_hiCo)+games["pathway"] + ".log"
                 cmd = ["nohup", "python",
-                       filePath + games["fileName"],
+                        games["fileName"],
                        "--cancer=" + _cancer,
                        "--gene=" + geneStr,
                        "--modelName=" + games["modelName"],
@@ -56,29 +56,28 @@ def run(games):
 
 if __name__ == "__main__":
     cancerList = [ "BRCA","KIRC","THCA", "HNSC", "LUAD","LIHC", "LUSC","ESCA", "KIRP","BLCA"]
-    # geneList = ["SETD2", "TP53", "RB1", "CNTNAP3", "CSMD1", "ANK3", "OR4C6", "MYT1L"]
     pathways = ["KEGG_DNA_REPLICATION", "GO_EPITHELIAL_TO_MESENCHYMAL_TRANSITION"]
     ls_date = time.strftime("%Y%m%d%H%M", time.localtime())
-    resultPath = "./CEBP/result/" + ls_date
+    resultPath = "./CEBP/result/" + ls_date # your absolutely path to save results, such as "yourPath/CEBP/result/"+ls_data
     print(resultPath)
     os.mkdir(resultPath)
     modelName = "CEVAE"
 
     # ----------start1----------#
     # for 10 cancers in two pathway
-    # cancerList =  [ "BRCA","KIRC","THCA", "HNSC", "LUAD","LIHC", "LUSC","ESCA", "KIRP","BLCA"]
-    # geneList = []
-    # geneMutationRate = [10]
-    # confounderNumbers = [200]
-    # hiddenConfounder = [20,30]
-    # for pathway in pathways:
-    #     for confounderNumber in confounderNumbers:
-    #         savepath = resultPath
-    #         fileName = "mutationEffect.py"
-    #         games = {"cancerList": cancerList, "geneList": geneList, "modelName": modelName, "treatRate": geneMutationRate,
-    #                      "confounderRate": confounderNumber,
-    #                      "pathway": pathway, "savePath": savepath, "fileName": fileName,"hiddenConfounder":hiddenConfounder}
-    #         run(games=games)
+    cancerList = [ "BRCA","KIRC","THCA", "HNSC", "LUAD","LIHC", "LUSC","ESCA", "KIRP","BLCA"]
+    geneList = []
+    geneMutationRate = [10]
+    confounderNumbers = [200]
+    hiddenConfounder = [20]
+    for pathway in pathways:
+        for confounderNumber in confounderNumbers:
+            savepath = resultPath
+            fileName = "./mutationEffect.py" # your absolutely path, such as "yourPath/CEBP/mutationEffect.py"
+            games = {"cancerList": cancerList, "geneList": geneList, "modelName": modelName, "treatRate": geneMutationRate,
+                         "confounderRate": confounderNumber,
+                         "pathway": pathway, "savePath": savepath, "fileName": fileName,"hiddenConfounder":hiddenConfounder}
+            run(games=games)
 
 
     # ----------start2----------#
